@@ -1,6 +1,7 @@
 package cn.voicet.callcenter.servlet;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -8,11 +9,19 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
+
+import net.sf.json.JSONObject;
 import cn.voicet.callcenter.nts.NTSThreadClient;
 
+/**
+ * http://voicet.oicp.net:8000/ccgate/sendMessage?to=ivr100&action=2700&body=testsss
+ * @author Administrator
+ *
+ */
 public class SendMessage extends HttpServlet {
 
-	//private static Logger log = Logger.getLogger(SendMessage.class);
+	private static Logger log = Logger.getLogger(SendMessage.class);
 	private static final long serialVersionUID = 1L;
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -22,7 +31,9 @@ public class SendMessage extends HttpServlet {
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		
+		response.setContentType("text/html");
+		response.setCharacterEncoding("utf-8");
+		PrintWriter out = response.getWriter();
 		String from;	//default thread own
 		String to;		//not null
 		int msgId;		//random int number
@@ -77,10 +88,20 @@ public class SendMessage extends HttpServlet {
         	body = "";
         }
 		//
-        System.out.println("from:"+from+", to:"+to+", msgId:"+msgId+", action:"+action+", channel:"+channel+", param:"+param+", body:"+body);
+        log.info("from:"+from+", to:"+to+", msgId:"+msgId+", action:"+action+", channel:"+channel+", param:"+param+", body:"+body);
         
         nsClient.SendMessage(from, to, action, channel, param, body);
-        
+        JSONObject json = new JSONObject();
+        json.put("from", from);
+        json.put("to", to);
+        json.put("msgId", msgId);
+        json.put("action", action);
+        json.put("channel", channel);
+        json.put("param", param);
+        json.put("body", body);
+        out.println(json);
+		out.flush();
+		out.close();
 	}
 
 }

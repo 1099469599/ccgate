@@ -33,6 +33,8 @@ public class NTSThreadClient {
 	            {
 	            	client.bRunning = true;
 	            	System.out.println("通讯线程已经启动");
+	            	System.out.println("tongxun thread start");
+tryconnectagain:
 	            	if(client.Connect(serverName,serverIp,port))
 	            	{
 		            	while(client.bRunning)
@@ -44,15 +46,29 @@ public class NTSThreadClient {
 			            	}
 			            	else
 			            	{
-			            		break;
+			            		
+			            		try {
+									Thread.sleep(1000*5);
+								} catch (InterruptedException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+			            		break tryconnectagain;
 			            	}
 		            	}
 	            	}
 	            	else
 	            	{
 	            		System.out.println("链接["+client.sServerIP+":"+client.iServerPort+"]失败");
+	            		try {
+							Thread.sleep(1000*5);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+	            		break tryconnectagain;
+	        	            
 	            	}
-	            	//
 	            	System.out.println("通讯线程已经退出");
 	            }
 	        };
@@ -86,7 +102,6 @@ public class NTSThreadClient {
 			 socket = new Socket(serverIp, port);
 			 inputs = socket.getInputStream();
 			 outputs = socket.getOutputStream();
-			 
 			 return true;
 	    	}
 			catch (IOException e) 

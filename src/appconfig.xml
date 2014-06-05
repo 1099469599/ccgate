@@ -1,2 +1,2 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ccgate local="ivr100" password="123456" nts="nts100" serverip="voicet.oicp.net" port="6637"/>
+<ccgate local="vts100" password="12345" nts="nts100" serverip="voicet.oicp.net" port="6637"/>
