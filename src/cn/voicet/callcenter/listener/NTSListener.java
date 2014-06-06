@@ -20,6 +20,7 @@ public class NTSListener implements ServletContextListener {
 		if(null!=ntsThread){
 			System.out.println("ntsThread interrupt");
 			ntsThread.End();
+			ntsThread = null;
 		}
 	}
 

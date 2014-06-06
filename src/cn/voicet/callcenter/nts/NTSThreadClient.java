@@ -34,19 +34,26 @@ public class NTSThreadClient {
 			public void run() {
 				client.bRunning = true;
 				log.info("通讯线程已经启动");
-				tryconnectagain: if (client.Connect(serverName, serverIp, port)) {
+				tryconnectagain: 
+					if (client.Connect(serverName, serverIp, port)) {
 					while (client.bRunning) {
 						NTSMsg msg = client.RecvMessage();
 						if (msg != null) {
 							client.OnRecvMessage(msg);
 						} else {
-
 							try {
 								Thread.sleep(1000 * 5);
 							} catch (InterruptedException e) {
 								e.printStackTrace();
 							}
-							break tryconnectagain;
+							if(client.bRunning)
+							{
+								break tryconnectagain;
+							}
+							else
+							{
+								break;
+							}
 						}
 					}
 				} else {
@@ -57,10 +64,11 @@ public class NTSThreadClient {
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-					break tryconnectagain;
-
+					if(client.bRunning)
+					{
+						break tryconnectagain;
+					}
 				}
-				log.info("通讯线程已经退出");
 			}
 		};
 	}
@@ -74,8 +82,8 @@ public class NTSThreadClient {
 
 	public void End() {
 		try {
-			this.socket.close();
 			this.bRunning = false;
+			this.socket.close();
 		} catch (Exception e) {
 
 		}
